@@ -8,34 +8,24 @@ class KeleClient
     include HTTParty
     base_uri 'https://www.bloc.io/api/v1'
 
-    attr_reader :token, :log
-    attr_accessor :logging
+    attr_reader :token
 
     def initialize(username, password, logging=true)
-        @log = []
-        act = 'AUTHENTICATION'
-        msg = ''
-        @logging = logging
-
         options = { :body => {:email => username, :password => password} }
         resp = self.class.post('/sessions', options)
-        
-        if resp.code == 200 then
-            resp_body = JSON.parse(resp.body)
-            @token = resp_body['auth_token']
-            msg = "Success: Authenticated as #{username} successfully!"
-        else
-            msg = "Failed: Unable to authenticate as #{username}, check username/password and try again."
-        end 
+        resp_body = JSON.parse(resp.body)
+        @token = resp_body['auth_token']
 
-        log_message(act, msg)
+        if resp.code == 200 then
+            puts "Success: Authenticated #{username}!"
+        else
+            puts "Failed: Unable to authenticate #{username}."
+        end
     end
 
-    private
+    def get_me
+        resp = self.class.get('/users/me', :headers => { "Authorization": @token})
 
-    def log_message(act, msg)
-        if @logging then
-            log << "#{act} at #{Time.now} - #{msg}" 
-        end
+        return JSON.parse(resp)
     end
 end
