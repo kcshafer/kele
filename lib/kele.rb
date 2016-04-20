@@ -26,6 +26,12 @@ class KeleClient
     def get_me
         resp = self.class.get('/users/me', :headers => { "Authorization": @token})
 
-        return JSON.parse(resp)
+        return JSON.parse(resp.body)
+    end
+
+    def get_mentor_availability(mentor_id)
+        resp = self.class.get("/mentors/#{mentor_id}/student_availability", :headers => { "Authorization": @token})
+
+        return JSON.parse(resp.body)
     end
 end

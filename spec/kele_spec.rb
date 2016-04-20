@@ -4,7 +4,7 @@ describe Kele do
     before do
         session_body = '{"auth_token": "12345"}'
         stub_request(:post, "https://www.bloc.io/api/v1/sessions").
-            with(:body => "email=kc%40test.com&password=test123", :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
+            with(:body => "email=kc%40test.com&password=test123").
             to_return(:status => 200, :body => session_body, :headers => {})
     end
 
@@ -40,10 +40,21 @@ describe Kele do
 
         user_info = client.get_me
         expect(user_info).to_not be_nil
+        expect(user_info).to be_a Hash
     end
 
     it "should retrieve mentor availability" do
+        body = File.read('spec/json/mentor_availability.json')
+        stub_request(:get, "https://www.bloc.io/api/v1/mentors/1/student_availability").
+            with(:headers => {'Authorization'=>'12345'}).
+            to_return(:status => 200, :body => body, :headers => {})
 
+
+        client = KeleClient.new('kc@test.com', 'test123')
+
+        mentor_availability = client.get_mentor_availability(1)
+        expect(mentor_availability).to_not be_nil
+        expect(mentor_availability).to be_a Array
     end
 end
 
