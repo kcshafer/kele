@@ -30,7 +30,7 @@ describe Kele do
     end
 
     it "should retrieve user information" do
-        body = File.read('lib/json/get_me.json')
+        body = File.read('spec/json/get_me.json')
         stub_request(:get, "https://www.bloc.io/api/v1/users/me").
             with(:headers => {'Authorization'=>'12345'}).
             to_return(:status => 200, :body => body, :headers => {})
@@ -40,6 +40,10 @@ describe Kele do
 
         user_info = client.get_me
         expect(user_info).to_not be_nil
+    end
+
+    it "should retrieve mentor availability" do
+
     end
 end
 
