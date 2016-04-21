@@ -56,6 +56,32 @@ describe Kele do
         expect(mentor_availability).to_not be_nil
         expect(mentor_availability).to be_a Array
     end
+
+    it "should retrieve roadmap" do
+        body = File.read("spec/json/roadmap.json")
+        stub_request(:get, "https://www.bloc.io/api/v1/roadmaps/31").
+            with(:headers => {'Authorization'=>'12345'}).
+            to_return(:status => 200, :body => body, :headers => {})
+
+        client = KeleClient.new('kc@test.com', 'test123')
+
+        roadmap = client.get_roadmap(31)
+        expect(roadmap).to_not be_nil
+        expect(roadmap).to be_a Hash
+    end
+
+    it "should retrieve checkpoint" do
+        body = File.read("spec/json/checkpoint.json")
+        stub_request(:get, "https://www.bloc.io/api/v1/checkpoints/1606").
+            with(:headers => {'Authorization'=>'12345'}).
+            to_return(:status => 200, :body => body, :headers => {})
+
+        client = KeleClient.new('kc@test.com', 'test123')
+
+        checkpoint = client.get_checkpoint(1606)
+        expect(checkpoint).to_not be_nil
+        expect(checkpoint).to be_a Hash
+    end
 end
 
 

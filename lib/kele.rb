@@ -3,9 +3,11 @@ require 'httparty'
 require 'json'
 
 require "kele/version"
+require "roadmap"
 
 class KeleClient
     include HTTParty
+    include Roadmap
     base_uri 'https://www.bloc.io/api/v1'
 
     attr_reader :token
@@ -24,14 +26,26 @@ class KeleClient
     end
 
     def get_me
-        resp = self.class.get('/users/me', :headers => { "Authorization": @token})
+        # GET /users/me
+
+        resp = self.class.get('/users/me', :headers => { "Authorization": @token })
 
         return JSON.parse(resp.body)
     end
 
     def get_mentor_availability(mentor_id)
-        resp = self.class.get("/mentors/#{mentor_id}/student_availability", :headers => { "Authorization": @token})
+        # GET /mentors/id/student_availability
+
+        resp = self.class.get("/mentors/#{mentor_id}/student_availability", :headers => { "Authorization": @token })
 
         return JSON.parse(resp.body)
+    end
+
+    def get_roadmap(roadmap_id)
+        roadmap(roadmap_id)
+    end
+
+    def get_checkpoint(checkpoint_id)
+        checkpoint(checkpoint_id)
     end
 end
