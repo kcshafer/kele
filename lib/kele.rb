@@ -48,4 +48,30 @@ class KeleClient
     def get_checkpoint(checkpoint_id)
         checkpoint(checkpoint_id)
     end
+
+    def get_messages(page_number=nil)
+        # GET /message_threads
+
+        body = page_number == nil ? nil : { "page" => page_number }
+        resp = self.class.get('/message_threads', :headers => { "Authorization": @token }, :body => body)
+
+        return JSON.parse(resp.body)
+    end
+
+    def send_message(user_id, recipient_id, token=nil, subject=nil, body)
+        # POST /message
+
+        body = { :user_id => user_id, :recipient_id => recipient_id, :token => token, :subject => subject, :body => body }
+        resp = self.class.post("/message", :headers => {"Authorization": @token}, :body => body)
+
+        return JSON.parse(resp.body)
+    end
+
+    def create_submission(branch, url, checkpoint_id, comment, enrollment_id)
+
+        body = { :assignment_branch => branch, :assignment_commit_link => url, :checkpoint_id => checkpoint_id, :comment => comment, :enrollment_id => enrollment_id }
+        resp = self.class.post("/checkpoint_submissions", :headers => {"Authorization": @token}, :body => body)
+
+        return JSON.parse(resp.body)
+    end
 end
